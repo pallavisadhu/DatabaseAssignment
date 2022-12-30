@@ -11,7 +11,6 @@ import cucumber.api.junit.Cucumber;
 		features="/Users/pallavisadhu/Desktop/DataBaseAssignment/DataBase_Sprint1/src/test/java/features"
 		,glue={"stepdef"}
 		,plugin={"pretty","html:target/html","json:target/report.json"}
-		,tags= {"@regression"}
 		,monochrome=true,dryRun=false,strict=true
 		)
 
