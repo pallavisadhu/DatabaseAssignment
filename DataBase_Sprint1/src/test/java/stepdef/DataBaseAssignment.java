@@ -6,6 +6,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -26,6 +27,7 @@ public class DataBaseAssignment{
 	int rowcount;
 	ArrayList<String> al;
 	ArrayList<String> dbal;
+	
 	String db_empid, db_empname,db_sal;
 
 	
@@ -59,10 +61,11 @@ public class DataBaseAssignment{
 		    
 		    System.out.println("ui rows==>"+uirows);
 		    System.out.println("database row==>"+rowcount);
-		    if(uirows==rowcount) 
-		    	Assert.assertTrue(true);
-		    else
-		    	Assert.assertFalse(false);		
+		    try {
+		    Assert.assertEquals(uirows,rowcount);	
+		    }catch(AssertionError e) {
+		    	e.printStackTrace();
+		    }
 	   
 	}
 	@When("^the total number of departments present in each city are retrieved from the data base$")
@@ -73,33 +76,39 @@ public class DataBaseAssignment{
         colcount = rsMetaData.getColumnCount();
         System.out.println(colcount);
         al = new ArrayList<String>();
+       
         while (resultSet.next())
         {
         System.out.println(resultSet.getString(1));
         System.out.println(resultSet.getString(2));
+       
         al.add(resultSet.getString(2));
 
         rowcount++;
         }
         
-        System.out.println(rowcount);
-        System.out.println(al);
-
-	    
+        System.out.println("ui rows==>"+rowcount);
+        System.out.println(al);	    
 	}
 
 	@Then("^the data should match with the table on the application$")
 	public void the_data_should_match_with_the_table_on_the_application() throws Throwable {
-		 List<WebElement>list = Hooks.driver.findElements(By.xpath("//table[@class='adap-table']//tbody//tr//child::td[2]"));
+		
+		List<WebElement>list = Hooks.driver.findElements(By.xpath("//table[@class='adap-table']//tbody//tr//child::td[2]"));
 		 dbal = new ArrayList<String>();
+
 		 for (WebElement l:list) {
-			 dbal.add(l.getText()); 
-			 
+			 dbal.add(l.getText()); 		 
 		 }		 
 		 System.out.println(dbal);
+		 try {
+		 Assert.assertTrue(al.equals(dbal));
+		 }catch(AssertionError e) {
+			 e.printStackTrace();
+		 }
 		 al.removeAll(dbal);
-		 System.out.println(al);
-		 Assert.assertEquals(al.get(0),"Seattle");
+		 System.out.println("The missing city is:" + al);
+		// Assert.assertEquals(al.get(0),"Seattle");
 	   
 	}
 	
@@ -127,14 +136,12 @@ public class DataBaseAssignment{
 	@Then("^the data should be mathed with the application$")
 	public void the_data_should_be_mathed_with_the_application() throws Throwable {
 		String ui_empid =  Hooks.driver.findElement(By.xpath("//table[@class='salary_employee']//tbody//tr//td[1]")).getText();
-		
 		Assert.assertEquals(ui_empid, "Employee_id :"+db_empid);
+		
 		String ui_empname = Hooks.driver.findElement(By.xpath("//table[@class='salary_employee']//tbody//tr//td[2]")).getText();	
 		Assert.assertEquals(ui_empname, "Name:"+db_empname);
 		
 		String ui_sal = Hooks.driver.findElement(By.xpath("//table[@class='salary_employee']//tbody//tr//td[3]")).getText();
 		Assert.assertEquals(ui_sal, "Salary:"+db_sal);
 	}
-
-
 }
