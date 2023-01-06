@@ -124,9 +124,9 @@ public class DataBaseAssignment{
         	db_empid=resultSet.getString(1);
             db_empname = resultSet.getString(2);
             db_sal = resultSet.getString(3);
-            System.out.println(db_empid);
-            System.out.println(db_empname);
-            System.out.println(db_sal);
+            System.out.println("database empid:"+db_empid);
+            System.out.println("database empname:"+db_empname);
+            System.out.println("database salary:"+db_sal);
             rowcount++;
       
         }
@@ -136,12 +136,15 @@ public class DataBaseAssignment{
 	@Then("^the data should be mathed with the application$")
 	public void the_data_should_be_mathed_with_the_application() throws Throwable {
 		String ui_empid =  Hooks.driver.findElement(By.xpath("//table[@class='salary_employee']//tbody//tr//td[1]")).getText();
+		System.out.println("ui empid:"+ui_empid);
 		Assert.assertEquals(ui_empid, "Employee_id :"+db_empid);
 		
-		String ui_empname = Hooks.driver.findElement(By.xpath("//table[@class='salary_employee']//tbody//tr//td[2]")).getText();	
+		String ui_empname = Hooks.driver.findElement(By.xpath("//table[@class='salary_employee']//tbody//tr//td[2]")).getText();
+		System.out.println("ui empname:"+ui_empname);
 		Assert.assertEquals(ui_empname, "Name:"+db_empname);
 		
 		String ui_sal = Hooks.driver.findElement(By.xpath("//table[@class='salary_employee']//tbody//tr//td[3]")).getText();
+		System.out.println("ui sal:"+ui_sal);
 		Assert.assertEquals(ui_sal, "Salary:"+db_sal);
 	}
 }
